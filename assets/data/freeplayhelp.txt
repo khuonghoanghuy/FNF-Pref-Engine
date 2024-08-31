@@ -1,0 +1,6 @@
+- HELP -
+Press UP, DOWN to change selection
+Press R to play a random song
+Press ACCEPT to play a selected song
+
+Press F1 to close

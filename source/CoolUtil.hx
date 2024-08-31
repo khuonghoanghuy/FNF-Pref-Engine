@@ -18,6 +18,12 @@ class CoolUtil
 		return daList;
 	}
 
+	public static function coolStringFile(path:String):String
+	{
+		var daList:String = Assets.getText(path).trim();
+		return daList;
+	}
+
 	public static function numberArray(max:Int, ?min = 0):Array<Int>
 	{
 		var dumbArray:Array<Int> = [];

@@ -20,6 +20,7 @@ class Hscript extends FlxBasic
 
     public function new(file:String, ?execute:Bool = true) {
         super();       
+        trace("file load: " + file);
 
         parser.allowJSON = parser.allowTypes = parser.allowMetadata = true;
 		setVariable('trace', function(value:Dynamic) {

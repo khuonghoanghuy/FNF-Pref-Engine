@@ -38,6 +38,7 @@
 
 	<assets path="assets/images"/>
 	<assets path="assets/data"/>
+	<assets path="assets/scripts" embed="false" />
 	
 	<assets path="assets/music" include="*.mp3" if="web" />
 	<assets path="assets/music" include="*.ogg" unless="web" />

@@ -1,5 +1,6 @@
 package;
 
+import flixel.util.FlxTimer;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -88,12 +89,16 @@ class FreeplayState extends MusicBeatState
 		{
 			var randomSong:Int = FlxG.random.int(0, songs.length - 1);
 			changeSelection(randomSong);
-			var poop:String = Highscore.formatSong(songs[randomSong].toLowerCase(), curDifficulty);
-			PlayState.SONG = Song.loadFromJson(poop, songs[randomSong].toLowerCase());
-			PlayState.isStoryMode = false;
-			FlxG.switchState(new PlayState());
-			if (FlxG.sound.music != null)
-				FlxG.sound.music.stop();
+			var timer:FlxTimer = new FlxTimer();
+			timer.cancel(); // should be cancel before starting play
+			timer.start(1, function (timer:FlxTimer) {
+				var poop:String = Highscore.formatSong(songs[randomSong].toLowerCase(), curDifficulty);
+				PlayState.SONG = Song.loadFromJson(poop, songs[randomSong].toLowerCase());
+				PlayState.isStoryMode = false;
+				FlxG.switchState(new PlayState());
+				if (FlxG.sound.music != null)
+					FlxG.sound.music.stop();
+			});
 		}
 
 		if (upP)
@@ -125,6 +130,9 @@ class FreeplayState extends MusicBeatState
 			if (FlxG.sound.music != null)
 				FlxG.sound.music.stop();
 		}
+
+		if (FlxG.keys.justPressed.F1)
+			openSubState(new FreeplayStateHelp());
 	}
 
 	function changeDiff(change:Int = 0)
@@ -179,5 +187,28 @@ class FreeplayState extends MusicBeatState
 				// item.setGraphicSize(Std.int(item.width));
 			}
 		}
+	}
+}
+
+class FreeplayStateHelp extends MusicBeatSubstate {
+	override function create() {
+		super.create();
+	
+		var bg:FlxSprite = new FlxSprite(0, 0).makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+		bg.alpha = 0.6;
+		bg.screenCenter();
+		add(bg);
+
+		var wholeHintText:FlxText = new FlxText(0, 0, 0, CoolUtil.coolStringFile(Paths.file("data/freeplayhelp.txt")), 24);
+		wholeHintText.screenCenter();
+		wholeHintText.alignment = CENTER;
+		add(wholeHintText);
+	}
+
+	override function update(elapsed:Float) {
+		super.update(elapsed);
+	
+		if (FlxG.keys.justPressed.F1)
+			close();
 	}
 }
