@@ -91,6 +91,13 @@ class PlayState extends MusicBeatState
 
 	public function new() {
 		super();
+		for (script in Assets.list(TEXT).filter(text -> text.contains('assets/scripts')))
+			if (script.endsWith('.hxs'))
+				scriptArray.push(new Hscript(script));
+
+		if (Assets.exists(Paths.script('data/' + Paths.formatToSongPath(SONG.song) + '/script')))
+			scriptArray.push(new Hscript(Paths.script('data/' + Paths.formatToSongPath(SONG.song) + '/script')));
+
 		instance = this;
 		FlxG.mouse.visible = false;
 	}
@@ -287,18 +294,11 @@ class PlayState extends MusicBeatState
 		healthHeads.cameras = [camHUD];
 		doof.cameras = [camHUD];
 
-		for (script in Assets.list(TEXT).filter(text -> text.contains('assets/scripts')))
-			if (script.endsWith('.hxs'))
-				scriptArray.push(new Hscript(script));
-
 		callOnScripts("create", []);
 
 		super.create();
 
 		callOnScripts("createPost", []);
-
-		if (Assets.exists(Paths.script('data/' + Paths.formatToSongPath(SONG.song) + '/script')))
-			scriptArray.push(new Hscript(Paths.script('data/' + Paths.formatToSongPath(SONG.song) + '/script')));
 	}
 
 	var startTimer:FlxTimer;
