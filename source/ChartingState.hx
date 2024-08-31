@@ -91,13 +91,14 @@ class ChartingState extends MusicBeatState
 		else
 		{
 			_song = {
-				song: 'Monster',
+				song: 'Tutorial',
 				notes: [],
 				bpm: 95,
 				sections: 0,
 				needsVoices: false,
 				player1: 'bf',
 				player2: 'dad',
+				stages: 'stage',
 				sectionLengths: [],
 				speed: 1
 			};

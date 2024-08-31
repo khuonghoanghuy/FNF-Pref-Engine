@@ -136,10 +136,7 @@ class PlayState extends MusicBeatState
 
 		Conductor.changeBPM(SONG.bpm);
 
-		if (curStage == null)
-			curStage = "stage";
-		else if (curStage != null)
-			curStage = SONG.stages;
+		curStage = SONG.stages;
 
 		switch (curLevel) {
 			case "Spookeez" | "South" | "Monster": curStage = "halloween";
