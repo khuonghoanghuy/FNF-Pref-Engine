@@ -17,7 +17,7 @@ import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
-import flixel.system.FlxSound;
+import flixel.sound.FlxSound;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
@@ -43,38 +43,38 @@ class PlayState extends MusicBeatState
 
 	var halloweenLevel:Bool = false;
 
-	private var vocals:FlxSound;
+	public var vocals:FlxSound;
 
-	private var dad:Character;
-	private var gf:Character;
-	private var boyfriend:Boyfriend;
+	public var dad:Character;
+	public var gf:Character;
+	public var boyfriend:Boyfriend;
 
-	private var notes:FlxTypedGroup<Note>;
-	private var unspawnNotes:Array<Note> = [];
+	public var notes:FlxTypedGroup<Note>;
+	public var unspawnNotes:Array<Note> = [];
 
-	private var strumLine:FlxSprite;
-	private var curSection:Int = 0;
+	public var strumLine:FlxSprite;
+	public var curSection:Int = 0;
 
-	private var camFollow:FlxObject;
-	private var strumLineNotes:FlxTypedGroup<FlxSprite>;
-	private var playerStrums:FlxTypedGroup<FlxSprite>;
+	public var camFollow:FlxObject;
+	public var strumLineNotes:FlxTypedGroup<FlxSprite>;
+	public var playerStrums:FlxTypedGroup<FlxSprite>;
 
-	private var camZooming:Bool = false;
-	private var curSong:String = "";
+	public var camZooming:Bool = false;
+	public var curSong:String = "";
 
-	private var gfSpeed:Int = 1;
-	private var health:Float = 1;
-	private var combo:Int = 0;
+	public var gfSpeed:Int = 1;
+	public var health:Float = 1;
+	public var combo:Int = 0;
 
-	private var healthBarBG:FlxSprite;
-	private var healthBar:FlxBar;
+	public var healthBarBG:FlxSprite;
+	public var healthBar:FlxBar;
 
-	private var generatedMusic:Bool = false;
-	private var startingSong:Bool = false;
+	public var generatedMusic:Bool = false;
+	public var startingSong:Bool = false;
 
-	private var healthHeads:FlxSprite;
-	private var camHUD:FlxCamera;
-	private var camGame:FlxCamera;
+	public var healthHeads:FlxSprite;
+	public var camHUD:FlxCamera;
+	public var camGame:FlxCamera;
 
 	var dialogue:Array<String> = ['blah blah blah', 'coolswag'];
 
@@ -85,6 +85,15 @@ class PlayState extends MusicBeatState
 	var songScore:Int = 0;
 
 	public static var campaignScore:Int = 0;
+
+	public static var instance:PlayState = null;
+	var scriptArray:Array<Hscript> = [];
+
+	public function new() {
+		super();
+		instance = this;
+		FlxG.mouse.visible = false;
+	}
 
 	override public function create()
 	{
@@ -167,7 +176,6 @@ class PlayState extends MusicBeatState
 			stageCurtains.antialiasing = true;
 			stageCurtains.scrollFactor.set(1.3, 1.3);
 			stageCurtains.active = false;
-
 			add(stageCurtains);
 		}
 
@@ -279,13 +287,18 @@ class PlayState extends MusicBeatState
 		healthHeads.cameras = [camHUD];
 		doof.cameras = [camHUD];
 
-		// if (SONG.song == 'South')
-		// FlxG.camera.alpha = 0.7;
-		// UI_camera.zoom = 1;
+		for (script in Assets.list(TEXT).filter(text -> text.contains('assets/scripts')))
+			if (script.endsWith('.hxs'))
+				scriptArray.push(new Hscript(script));
 
-		// cameras = [FlxG.cameras.list[1]];
+		callOnScripts("create", []);
 
 		super.create();
+
+		callOnScripts("createPost", []);
+
+		if (Assets.exists(Paths.script('data/' + Paths.formatToSongPath(SONG.song) + '/script')))
+			scriptArray.push(new Hscript(Paths.script('data/' + Paths.formatToSongPath(SONG.song) + '/script')));
 	}
 
 	var startTimer:FlxTimer;
@@ -579,12 +592,16 @@ class PlayState extends MusicBeatState
 		super.closeSubState();
 	}
 
-	private var paused:Bool = false;
+	public var paused:Bool = false;
 	var startedCountdown:Bool = false;
 
 	override public function update(elapsed:Float)
 	{
+		callOnScripts("update", [elapsed]);
+		
 		super.update(elapsed);
+
+		callOnScripts("updatePost", [elapsed]);
 
 		// trace("SONG POS: " + Conductor.songPosition);
 		// FlxG.sound.music.pitch = 2;
@@ -1288,6 +1305,7 @@ class PlayState extends MusicBeatState
 		}
 
 		super.stepHit();
+		callOnScripts("stepHit", [curStep]);
 	}
 
 	var lightningStrikeBeat:Int = 0;
@@ -1296,6 +1314,7 @@ class PlayState extends MusicBeatState
 	override function beatHit()
 	{
 		super.beatHit();
+		callOnScripts("beatHit", [curBeat]);
 
 		if (generatedMusic)
 		{
@@ -1352,5 +1371,26 @@ class PlayState extends MusicBeatState
 		{
 			lightningStrikeShit();
 		}
+	}
+
+	override function destroy() {
+		super.destroy();
+
+		callOnScripts("destroy", []);
+		instance = null;
+		scriptArray = [];
+	}
+
+	private function callOnScripts(funcName:String, args:Array<Dynamic>):Dynamic {
+		var value:Dynamic = Hscript.Function_Continue;
+
+		for (i in 0...scriptArray.length) {
+			final call:Dynamic = scriptArray[i].executeFunc(funcName, args);
+			final bool:Bool = call == Hscript.Function_Continue;
+			if (!bool && call != null)
+				value = call;
+		}
+
+		return value;
 	}
 }
