@@ -73,6 +73,8 @@ class FreeplayState extends MusicBeatState
 		super.create();
 	}
 
+	var stopChange:Bool = false;
+
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
@@ -85,7 +87,7 @@ class FreeplayState extends MusicBeatState
 		var accepted = controls.ACCEPT;
 		var random = FlxG.keys.justPressed.R;
 
-		if (random)
+		if (random && !stopChange)
 		{
 			var randomSong:Int = FlxG.random.int(0, songs.length - 1);
 			changeSelection(randomSong);
@@ -101,27 +103,28 @@ class FreeplayState extends MusicBeatState
 			});
 		}
 
-		if (upP)
+		if (upP && !stopChange)
 		{
 			changeSelection(-1);
 		}
-		if (downP)
+		if (downP && !stopChange)
 		{
 			changeSelection(1);
 		}
 
-		if (controls.LEFT_P)
+		if (controls.LEFT_P && !stopChange)
 			changeDiff(-1);
-		if (controls.RIGHT_P)
+		if (controls.RIGHT_P && !stopChange)
 			changeDiff(1);
 
-		if (controls.BACK)
+		if (controls.BACK && !stopChange)
 		{
 			FlxG.switchState(new MainMenuState());
 		}
 
-		if (accepted)
+		if (accepted && !stopChange)
 		{
+			stopChange = true;
 			var poop:String = Highscore.formatSong(songs[curSelected].toLowerCase(), curDifficulty);
 
 			PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].toLowerCase());
@@ -131,7 +134,7 @@ class FreeplayState extends MusicBeatState
 				FlxG.sound.music.stop();
 		}
 
-		if (FlxG.keys.justPressed.F1)
+		if (FlxG.keys.justPressed.F1 && !stopChange)
 			openSubState(new FreeplayStateHelp());
 	}
 

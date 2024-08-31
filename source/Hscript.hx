@@ -19,9 +19,7 @@ class Hscript extends FlxBasic
     public var parser:Parser = new Parser();
 
     public function new(file:String, ?execute:Bool = true) {
-        super();       
-        trace("file load: " + file);
-
+        super();
         parser.allowJSON = parser.allowTypes = parser.allowMetadata = true;
 		setVariable('trace', function(value:Dynamic) {
 			trace(value);
@@ -56,6 +54,8 @@ class Hscript extends FlxBasic
         setVariable('FlxTween', FlxTween);
         setVariable('FlxEase', FlxEase);
 
+		setVariable("Paths", Paths);
+
         setVariable("game", PlayState.instance);
         setVariable("add", function (basic:FlxBasic) {
             return PlayState.instance.add(basic);
@@ -71,8 +71,13 @@ class Hscript extends FlxBasic
     public function execute(file:String, ?executeCreate:Bool = true):Void {
 		try {
 			interp.execute(parser.parseString(Assets.getText(file)));
-		} catch (e:Dynamic)
+		} catch (e:Dynamic) {
+			#if hl
+			trace("execute error!\n" + e);
+			#else
 			Lib.application.window.alert(e, 'Hscript Error!');
+			#end
+		}
 
 		trace('Script Loaded Succesfully: $file');
 
@@ -86,8 +91,13 @@ class Hscript extends FlxBasic
 
 		try {
 			interp.variables.set(name, val);
-		} catch (e:Dynamic)
+		} catch (e:Dynamic) {
+			#if hl
+			trace("set variable rror!\n" + e);
+			#else
 			Lib.application.window.alert(e, 'Hscript Error!');
+			#end
+		}
 	}
 
 	public function getVariable(name:String):Dynamic {
@@ -96,8 +106,13 @@ class Hscript extends FlxBasic
 
 		try {
 			return interp.variables.get(name);
-		} catch (e:Dynamic)
+		} catch (e:Dynamic) {
+			#if hl
+			trace("get variable error!\n" + e);
+			#else
 			Lib.application.window.alert(e, 'Hscript Error!');
+			#end
+		}
 
 		return null;
 	}
@@ -108,8 +123,13 @@ class Hscript extends FlxBasic
 
 		try {
 			interp.variables.remove(name);
-		} catch (e:Dynamic)
+		} catch (e:Dynamic) {
+			#if hl
+			trace("remove variable error!\n" + e);
+			#else
 			Lib.application.window.alert(e, 'Hscript Error!');
+			#end
+		}
 	}
 
 	public function existsVariable(name:String):Bool {
@@ -118,8 +138,13 @@ class Hscript extends FlxBasic
 
 		try {
 			return interp.variables.exists(name);
-		} catch (e:Dynamic)
+		} catch (e:Dynamic) {
+			#if hl
+			trace("exits variable error!\n" + e);
+			#else
 			Lib.application.window.alert(e, 'Hscript Error!');
+			#end
+		}
 
 		return false;
 	}
@@ -131,8 +156,13 @@ class Hscript extends FlxBasic
 		if (existsVariable(funcName)) {
 			try {
 				return Reflect.callMethod(this, getVariable(funcName), args == null ? [] : args);
-			} catch (e:Dynamic)
+			} catch (e:Dynamic) {
+				#if hl
+				trace("execute function error!\n" + e);
+				#else
 				Lib.application.window.alert(e, 'Hscript Error!');
+				#end
+			}
 		}
 
 		return null;

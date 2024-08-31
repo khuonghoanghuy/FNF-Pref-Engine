@@ -1,0 +1,32 @@
+var lightningStrikeBeat:Int = 0;
+var lightningOffset:Int = 8;
+var halloweenBG;
+
+function create() {
+    var hallowTex = Paths.getSparrowAtlas("getSparrowAtlas");
+    halloweenBG = new FlxSprite(-200, -100);
+    halloweenBG.frames = hallowTex;
+    halloweenBG.animation.addByPrefix('idle', 'halloweem bg0');
+    halloweenBG.animation.addByPrefix('lightning', 'halloweem bg lightning strike', 24, false);
+    halloweenBG.animation.play('idle');
+    add(halloweenBG);
+}
+
+function beatHit(curBeat:Int) {
+    if (FlxG.random.bool(10) && game.curBeat > lightningStrikeBeat + lightningOffset)
+	{
+		lightningStrikeShit();
+	}
+}
+
+function lightningStrikeShit():Void
+{
+	FlxG.sound.play('assets/sounds/thunder_' + FlxG.random.int(1, 2) + '.ogg');
+	halloweenBG.animation.play('lightning');
+
+	lightningStrikeBeat = game.curBeat;
+	lightningOffset = FlxG.random.int(8, 24);
+
+	game.boyfriend.playAnim('scared', true);
+	game.gf.playAnim('scared', true);
+}
