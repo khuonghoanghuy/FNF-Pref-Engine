@@ -1,0 +1,7 @@
+function beatHit(curBeat:Int) {
+    if (curBeat % 8 == 7 && game.curSong == 'Bopeebo')
+	{
+        game.gf.playAnim("cheer", true);
+		game.boyfriend.playAnim('hey', true);
+	}
+}

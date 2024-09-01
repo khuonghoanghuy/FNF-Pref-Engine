@@ -82,8 +82,8 @@ class FreeplayState extends MusicBeatState
 		lerpScore = Math.floor(FlxMath.lerp(lerpScore, intendedScore, 0.4));
 		scoreText.text = "PERSONAL BEST:" + lerpScore;
 
-		var upP = controls.UP_P;
-		var downP = controls.DOWN_P;
+		var upP = controls.UI_UP_P;
+		var downP = controls.UI_DOWN_P;
 		var accepted = controls.ACCEPT;
 		var random = FlxG.keys.justPressed.R;
 
@@ -112,9 +112,9 @@ class FreeplayState extends MusicBeatState
 			changeSelection(1);
 		}
 
-		if (controls.LEFT_P && !stopChange)
+		if (controls.UI_LEFT_P && !stopChange)
 			changeDiff(-1);
-		if (controls.RIGHT_P && !stopChange)
+		if (controls.UI_RIGHT_P && !stopChange)
 			changeDiff(1);
 
 		if (controls.BACK && !stopChange)
