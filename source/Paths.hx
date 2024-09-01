@@ -11,7 +11,7 @@ using StringTools;
 
 class Paths {
 	inline public static final DEFAULT_FOLDER:String = 'assets';
-	public static var ALL_SCRIPT_EXTENSION:Array<String> = ['.hxs', '.hx', '.hxc'];
+	public static var ALL_SCRIPT_EXTENSION:Array<String> = ['.hxs'];
 
 	static public function getPath(folder:Null<String>, file:String) {
 		if (folder == null)

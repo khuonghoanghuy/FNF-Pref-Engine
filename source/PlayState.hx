@@ -136,11 +136,13 @@ class PlayState extends MusicBeatState
 
 		Conductor.changeBPM(SONG.bpm);
 
-		curStage = SONG.stages;
-
-		switch (curLevel) {
-			case "Spookeez" | "South" | "Monster": curStage = "halloween";
-			default: curStage = "stage";
+		if (SONG.stages != null) {
+			curStage = SONG.stages;
+		} else {
+			switch (SONG.song.toLowerCase()) {
+				case "spookeez" | "south" | "monster": curStage = "halloween";
+				default: curStage = "stage";
+			}
 		}
 
 		loadStage();
@@ -220,11 +222,11 @@ class PlayState extends MusicBeatState
 		// healthBar
 		add(healthBar);
 		
-		iconP1 = new HealthIcon("bf", true);
+		iconP1 = new HealthIcon(SONG.player1, true);
 		iconP1.y = healthBar.y - (iconP1.height / 2);
 		add(iconP1);
 
-		iconP2 = new HealthIcon("dad", false);
+		iconP2 = new HealthIcon(SONG.player2, false);
 		iconP2.y = healthBar.y - (iconP2.height / 2);
 		add(iconP2);
 

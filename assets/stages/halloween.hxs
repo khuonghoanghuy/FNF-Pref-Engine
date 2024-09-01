@@ -3,7 +3,7 @@ var lightningOffset:Int = 8;
 var halloweenBG;
 
 function create() {
-    var hallowTex = Paths.getSparrowAtlas("getSparrowAtlas");
+    var hallowTex = Paths.getSparrowAtlas("stages/halloween/halloween_bg");
     halloweenBG = new FlxSprite(-200, -100);
     halloweenBG.frames = hallowTex;
     halloweenBG.animation.addByPrefix('idle', 'halloweem bg0');
