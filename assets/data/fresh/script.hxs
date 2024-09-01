@@ -1,0 +1,13 @@
+function update(elapsed:Float) {
+    switch (totalBeats)
+    {
+        case 16:
+            game.gfSpeed = 2;
+        case 48:
+            game.gfSpeed = 1;
+        case 80:
+            game.gfSpeed = 2;
+        case 112:
+            game.gfSpeed = 1;
+    }
+}

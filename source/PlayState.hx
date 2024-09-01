@@ -1,5 +1,6 @@
 package;
 
+import flixel.util.FlxColor;
 import haxe.io.Path;
 import sys.FileSystem;
 import Section.SwagSection;
@@ -73,7 +74,10 @@ class PlayState extends MusicBeatState
 	var dialogue:Array<String> = ['blah blah blah', 'coolswag'];
 
 	var talking:Bool = true;
+
+	var scoreTxt:FlxText;
 	var songScore:Int = 0;
+	var lerpScore:Int = 0;
 
 	public static var campaignScore:Int = 0;
 
@@ -242,6 +246,11 @@ class PlayState extends MusicBeatState
 		iconP2.y = healthBar.y - (iconP2.height / 2);
 		add(iconP2);
 
+		scoreTxt = new FlxText(healthBarBG.x + 20, healthBarBG.y + 36, 0, "", 18);
+		scoreTxt.setFormat("assets/fonts/vcr.ttf", 18, FlxColor.WHITE, RIGHT, OUTLINE, FlxColor.BLACK);
+		scoreTxt.scrollFactor.set();
+		add(scoreTxt);
+
 		// healthBar.visible = healthHeads.visible = healthBarBG.visible = false;
 		if (isStoryMode)
 		{
@@ -259,6 +268,7 @@ class PlayState extends MusicBeatState
 		healthBarBG.cameras = [camHUD];
 		iconP1.cameras = [camHUD];
 		iconP2.cameras = [camHUD];
+		scoreTxt.cameras = [camHUD];
 		doof.cameras = [camHUD];
 
 		super.create();
@@ -565,6 +575,12 @@ class PlayState extends MusicBeatState
 	public var paused:Bool = false;
 	var startedCountdown:Bool = false;
 
+	function updateScore() {
+		lerpScore = songScore;
+		lerpScore = Math.floor(FlxMath.lerp(lerpScore, songScore, 0.4));
+		scoreTxt.text = "Score: " + lerpScore;
+	}
+
 	override public function update(elapsed:Float)
 	{
 		callOnScripts("update", [elapsed]);
@@ -572,9 +588,6 @@ class PlayState extends MusicBeatState
 		super.update(elapsed);
 
 		callOnScripts("updatePost", [elapsed]);
-
-		// trace("SONG POS: " + Conductor.songPosition);
-		// FlxG.sound.music.pitch = 2;
 
 		if (FlxG.keys.justPressed.ENTER && startedCountdown)
 		{
@@ -590,8 +603,7 @@ class PlayState extends MusicBeatState
 			FlxG.switchState(new ChartingState());
 		}
 
-		// FlxG.watch.addQuick('VOL', vocals.amplitudeLeft);
-		// FlxG.watch.addQuick('VOLRight', vocals.amplitudeRight);
+		updateScore();
 
 		var mult:Float = FlxMath.lerp(1, iconP1.scale.x, CoolUtil.boundTo(1 - (elapsed * 9), 0, 1));
 		iconP1.scale.set(mult, mult);
@@ -650,11 +662,6 @@ class PlayState extends MusicBeatState
 
 		if (generatedMusic && PlayState.SONG.notes[Std.int(curStep / 16)] != null)
 		{
-			if (curBeat % 4 == 0)
-			{
-				// trace(PlayState.SONG.notes[Std.int(curStep / 16)].mustHitSection);
-			}
-
 			if (camFollow.x != dad.getMidpoint().x + 150 && !PlayState.SONG.notes[Std.int(curStep / 16)].mustHitSection)
 			{
 				camFollow.setPosition(dad.getMidpoint().x + 150, dad.getMidpoint().y - 100);
@@ -684,38 +691,6 @@ class PlayState extends MusicBeatState
 		}
 
 		FlxG.watch.addQuick("beatShit", totalBeats);
-
-		if (curSong == 'Fresh')
-		{
-			switch (totalBeats)
-			{
-				case 16:
-					camZooming = true;
-					gfSpeed = 2;
-				case 48:
-					gfSpeed = 1;
-				case 80:
-					gfSpeed = 2;
-				case 112:
-					gfSpeed = 1;
-				case 163:
-					// FlxG.sound.music.stop();
-					// curLevel = 'Bopeebo';
-					// FlxG.switchState(new TitleState());
-			}
-		}
-
-		if (curSong == 'Bopeebo')
-		{
-			switch (totalBeats)
-			{
-				case 127:
-					// FlxG.sound.music.stop();
-					// curLevel = 'Fresh';
-					// FlxG.switchState(new PlayState());
-			}
-		}
-		// better streaming of shit
 
 		if (health <= 0)
 		{
@@ -1122,7 +1097,6 @@ class PlayState extends MusicBeatState
 				gf.playAnim('sad');
 			}
 			combo = 0;
-
 			songScore -= 10;
 
 			FlxG.sound.play('assets/sounds/missnote' + FlxG.random.int(1, 3) + Paths.soundExt, FlxG.random.float(0.1, 0.2));
@@ -1158,7 +1132,6 @@ class PlayState extends MusicBeatState
 				popUpScore(note.strumTime, note);
 				combo += 1;
 			}
-
 			health += 0.023;
 
 			switch (note.noteData)
