@@ -1,5 +1,6 @@
 package;
 
+import flixel.addons.ui.FlxUIDropDownMenu;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
@@ -78,6 +79,14 @@ class AnimationDebug extends FlxState
 		FlxG.camera.follow(camFollow);
 
 		super.create();
+
+		var characters:Array<String> = ["bf", 'dad', 'gf', 'spooky', 'monster'];
+
+		var player1DropDown = new FlxUIDropDownMenu(10, 100, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
+		{
+			daAnim = characters[Std.parseInt(character)];
+		});
+		player1DropDown.selectedLabel = daAnim;
 	}
 
 	function genBoyOffsets(pushList:Bool = true):Void
