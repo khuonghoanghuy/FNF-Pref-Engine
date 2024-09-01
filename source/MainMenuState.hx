@@ -23,38 +23,34 @@ class MainMenuState extends MusicBeatState
 	var magenta:FlxSprite;
 	var camFollow:FlxObject;
 
+	var versionArray:Array<String> = [
+		"Friday Night Funkin' v0.2.1", // og version
+		"Pref Engine v0.1.0", // pref version
+ 	];
+
 	override function create()
 	{
 		persistentUpdate = persistentDraw = true;
 
-		var bg:FlxSprite = new FlxSprite(-80).loadGraphic(AssetPaths.menuBG__png);
-		bg.scrollFactor.x = 0;
-		bg.scrollFactor.y = 0.18;
-		bg.setGraphicSize(Std.int(bg.width * 1.1));
-		bg.updateHitbox();
-		bg.screenCenter();
+		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image("menuBG"));
+		bg.scrollFactor.set(0, 0);
 		bg.antialiasing = true;
 		add(bg);
 
 		camFollow = new FlxObject(0, 0, 1, 1);
 		add(camFollow);
 
-		magenta = new FlxSprite(-80).loadGraphic(AssetPaths.menuDesat__png);
-		magenta.scrollFactor.x = 0;
-		magenta.scrollFactor.y = 0.18;
-		magenta.setGraphicSize(Std.int(magenta.width * 1.1));
-		magenta.updateHitbox();
-		magenta.screenCenter();
-		magenta.visible = false;
-		magenta.antialiasing = true;
+		magenta = new FlxSprite(0).loadGraphic(Paths.image("menuBGMagenta"));
+		magenta.scrollFactor.set(0, 0);
 		magenta.color = 0xFFfd719b;
+		magenta.visible = false;
 		add(magenta);
 		// magenta.scrollFactor.set();
 
 		menuItems = new FlxTypedGroup<FlxSprite>();
 		add(menuItems);
 
-		var tex = FlxAtlasFrames.fromSparrow(AssetPaths.FNF_main_menu_assets__png, AssetPaths.FNF_main_menu_assets__xml);
+		var tex = Paths.getSparrowAtlas("FNF_main_menu_assets");
 
 		for (i in 0...optionShit.length)
 		{
@@ -72,6 +68,14 @@ class MainMenuState extends MusicBeatState
 
 		FlxG.camera.follow(camFollow, null, 0.06);
 
+		for (i in 0...versionArray.length)
+		{
+			var versionText:FlxText = new FlxText(10, FlxG.height - 18 - (i * 18), 0, versionArray[i], 16);
+			versionText.scrollFactor.set();
+			versionText.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+			add(versionText);
+		}
+
 		changeItem();
 
 		super.create();
@@ -85,13 +89,11 @@ class MainMenuState extends MusicBeatState
 		{
 			if (controls.UI_UP_P)
 			{
-				FlxG.sound.play('assets/sounds/scrollMenu' + TitleState.soundExt);
 				changeItem(-1);
 			}
 
 			if (controls.UI_DOWN_P)
 			{
-				FlxG.sound.play('assets/sounds/scrollMenu' + TitleState.soundExt);
 				changeItem(1);
 			}
 
@@ -109,7 +111,7 @@ class MainMenuState extends MusicBeatState
 				else
 				{
 					selectedSomethin = true;
-					FlxG.sound.play('assets/sounds/confirmMenu' + TitleState.soundExt);
+					FlxG.sound.play('assets/sounds/confirmMenu' + Paths.soundExt);
 
 					FlxFlicker.flicker(magenta, 1.1, 0.15, false);
 
@@ -157,6 +159,8 @@ class MainMenuState extends MusicBeatState
 
 	function changeItem(huh:Int = 0)
 	{
+		Paths.sound("scrollMenu");
+
 		curSelected += huh;
 
 		if (curSelected >= menuItems.length)
@@ -172,6 +176,11 @@ class MainMenuState extends MusicBeatState
 			{
 				spr.animation.play('selected');
 				camFollow.setPosition(spr.getGraphicMidpoint().x, spr.getGraphicMidpoint().y);
+				FlxTween.tween(spr.scale, {x: 1.1, y: 1.1}, 0.1, {ease: FlxEase.sineInOut});
+			}
+			else
+			{
+				FlxTween.tween(spr.scale, {x: 1, y: 1}, 0.1, {ease: FlxEase.sineInOut});
 			}
 
 			spr.updateHitbox();

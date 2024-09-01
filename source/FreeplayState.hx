@@ -28,7 +28,7 @@ class FreeplayState extends MusicBeatState
 		if (FlxG.sound.music != null)
 		{
 			if (!FlxG.sound.music.playing)
-				FlxG.sound.playMusic('assets/music/freakyMenu' + TitleState.soundExt);
+				FlxG.sound.playMusic('assets/music/freakyMenu' + Paths.soundExt);
 		}
 
 		var isDebug:Bool = false;
@@ -38,7 +38,7 @@ class FreeplayState extends MusicBeatState
 		#end
 		songs = CoolUtil.coolTextFile("assets/data/freeplaySonglist.txt");
 
-		var bg:FlxSprite = new FlxSprite().loadGraphic(AssetPaths.menuBGBlue__png);
+		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image("menuBGBlue"));
 		add(bg);
 
 		grpSongs = new FlxTypedGroup<Alphabet>();
@@ -140,6 +140,7 @@ class FreeplayState extends MusicBeatState
 
 	function changeDiff(change:Int = 0)
 	{
+		Paths.sound("scrollMenu");
 		curDifficulty += change;
 
 		if (curDifficulty < 0)
@@ -162,6 +163,7 @@ class FreeplayState extends MusicBeatState
 
 	function changeSelection(change:Int = 0)
 	{
+		Paths.sound("scrollMenu");
 		curSelected += change;
 
 		if (curSelected < 0)

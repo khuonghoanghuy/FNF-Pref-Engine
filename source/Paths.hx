@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxG;
 import haxe.io.Path;
 import flixel.graphics.frames.FlxAtlasFrames;
 #if sys
@@ -12,6 +13,7 @@ using StringTools;
 class Paths {
 	inline public static final DEFAULT_FOLDER:String = 'assets';
 	public static var ALL_SCRIPT_EXTENSION:Array<String> = ['.hxs'];
+	static public var soundExt:String = #if web ".mp3" #else ".ogg" #end;
 
 	static public function getPath(folder:Null<String>, file:String) {
 		if (folder == null)
@@ -36,6 +38,13 @@ class Paths {
 
 	inline static public function getSparrowAtlas(key:String)
 		return FlxAtlasFrames.fromSparrow(image('$key'), file('images/$key.xml'));
+
+	inline static public function sound(key:String, ?playNow:Bool = true, ?loud:Float = 0.6) {
+		if (playNow)
+			FlxG.sound.play(file("sounds/" + key + soundExt), loud);
+		else
+			file("sounds/" + key + soundExt);
+	}
 
     inline static public function formatToSongPath(path:String) {
 		var invalidChars = ~/[~&\\;:<>#]/;
