@@ -47,6 +47,8 @@ class PlayState extends MusicBeatState
 	public var curSection:Int = 0;
 
 	public var camFollow:FlxObject;
+
+	var grpNoteSplashes:FlxTypedGroup<NoteSplash>;
 	public var strumLineNotes:FlxTypedGroup<FlxSprite>;
 	public var playerStrums:FlxTypedGroup<FlxSprite>;
 
@@ -141,6 +143,7 @@ class PlayState extends MusicBeatState
 		} else {
 			switch (SONG.song.toLowerCase()) {
 				case "spookeez" | "south" | "monster": curStage = "halloween";
+				case "bopeebo" | "fresh" | "dadbattle": curStage = "stage";
 				default: curStage = "stage";
 			}
 		}
@@ -193,6 +196,14 @@ class PlayState extends MusicBeatState
 		strumLineNotes = new FlxTypedGroup<FlxSprite>();
 		add(strumLineNotes);
 
+		grpNoteSplashes = new FlxTypedGroup<NoteSplash>();
+
+		var noteSplash:NoteSplash = new NoteSplash(100, 100, 0);
+		grpNoteSplashes.add(noteSplash);
+		noteSplash.alpha = 0.1;
+
+		add(grpNoteSplashes);
+
 		playerStrums = new FlxTypedGroup<FlxSprite>();
 		startingSong = true;
 
@@ -207,7 +218,6 @@ class PlayState extends MusicBeatState
 		FlxG.camera.zoom = 1.05;
 
 		FlxG.worldBounds.set(0, 0, FlxG.width, FlxG.height);
-
 		FlxG.fixedTimestep = false;
 
 		healthBarBG = new FlxSprite(0, FlxG.height * 0.9).loadGraphic(AssetPaths.healthBar__png);
@@ -240,6 +250,7 @@ class PlayState extends MusicBeatState
 		else
 			startCountdown();
 
+		grpNoteSplashes.cameras = [camHUD];
 		strumLineNotes.cameras = [camHUD];
 		notes.cameras = [camHUD];
 		healthBar.cameras = [camHUD];
@@ -839,7 +850,7 @@ class PlayState extends MusicBeatState
 
 	var endingSong:Bool = false;
 
-	private function popUpScore(strumtime:Float):Void
+	private function popUpScore(strumtime:Float, daNote:Note):Void
 	{
 		var noteDiff:Float = Math.abs(strumtime - Conductor.songPosition);
 		// boyfriend.playAnim('hey');
@@ -872,7 +883,12 @@ class PlayState extends MusicBeatState
 			daRating = 'good';
 			score = 200;
 		}
-
+		if (daRating == "sick") {
+			var noteSplash:NoteSplash = grpNoteSplashes.recycle(NoteSplash);
+			noteSplash.setupNoteSplash(daNote.x, daNote.y, daNote.noteData);
+			grpNoteSplashes.add(noteSplash);
+		}
+		
 		songScore += score;
 
 		rating.loadGraphic('assets/images/' + daRating + ".png");
@@ -1195,7 +1211,7 @@ class PlayState extends MusicBeatState
 		{
 			if (!note.isSustainNote)
 			{
-				popUpScore(note.strumTime);
+				popUpScore(note.strumTime, note);
 				combo += 1;
 			}
 

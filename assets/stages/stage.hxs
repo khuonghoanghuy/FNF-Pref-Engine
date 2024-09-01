@@ -1,16 +1,9 @@
 function create()
 {
-    var bg = new FlxSprite(-600, -200).loadGraphic(Paths.image("stages/stage/stageback"));
+    var bg = new FlxSprite(-600, -200).loadGraphic(Paths.image("stages/stage/ful_bg"));
     bg.scrollFactor.set(0.9, 0.9);
     bg.active = false;
     add(bg);
-
-    var stageFront = new FlxSprite(-650, 600).loadGraphic(Paths.image("stages/stage/stagefront"));
-    stageFront.setGraphicSize(Std.int(stageFront.width * 1.1));
-    stageFront.updateHitbox();
-    stageFront.scrollFactor.set(0.9, 0.9);
-    stageFront.active = false;
-    add(stageFront);
 
     var stageCurtains = new FlxSprite(-500, -300).loadGraphic(Paths.image("stages/stage/stagecurtains"));
     stageCurtains.setGraphicSize(Std.int(stageCurtains.width * 0.9));
