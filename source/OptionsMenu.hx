@@ -6,17 +6,25 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.util.FlxColor;
 
+using StringTools;
+
 class OptionsMenu extends MusicBeatState
 {
 	var titleTxt:FlxText;
 	var descTxt:FlxText;
 
-	var engine:OptionsEngine;
 	var stillInOpt:Bool = false;
 
 	var curSelected:Int = 0;
 
 	var grpControls:FlxTypedGroup<Alphabet>;
+
+	public var optionsList:Map<String, String> = [
+		"ghost tap" => "Play least misses with this"
+	];
+	public var menu:Array<String> = [];
+	var og:Array<String> = ["Gameplay"];
+	var gameplay:Array<String> = ["Ghost tap", "Downscroll"];
 
 	override function create()
 	{
@@ -39,22 +47,31 @@ class OptionsMenu extends MusicBeatState
 		add(titleTxt);
 		add(descTxt);
 
-		for (i in 0...engine.menu.length) {
-			var opti:Alphabet = new Alphabet(0, (70 * i) + 30, engine.menu[i], true, false);
+		grpControls = new FlxTypedGroup<Alphabet>();
+		add(grpControls);
+
+		for (i in 0...menu.length) {
+			var opti:Alphabet = new Alphabet(0, (70 * i) + 30, menu[i], true, false);
 			opti.isMenuItem = true;
 			opti.targetY = i;
 			grpControls.add(opti);
 		}
 
-		super.create();
+		changeMenu(og);
 
-		changeSelection();
+		super.create();
 	}
 
 	override function update(elapsed:Float)
 	{
 		if (controls.BACK)
-			FlxG.switchState(new MainMenuState());
+		{
+			if (stillInOpt) {
+				changeMenu(og);
+			} else {
+				FlxG.switchState(new MainMenuState());
+			}
+		}
 
 		if (controls.UI_UP_P) {
 			changeSelection(-1);
@@ -62,6 +79,27 @@ class OptionsMenu extends MusicBeatState
 
 		if (controls.UI_DOWN_P) {
 			changeSelection(1);
+		}
+
+		if (controls.ACCEPT) {
+			switch (menu[curSelected].toLowerCase()) {
+				// menu
+				case "gameplay":
+					stillInOpt = true;
+					changeMenu(gameplay);
+
+				case "ghost tap":
+					SaveData.set("ghost tap", !SaveData.get("ghost tap"));
+					trace(SaveData.get("ghost tap"));
+
+				// cool opt
+				case "back":
+					if (stillInOpt) {
+						changeMenu(og);
+					} else {
+						FlxG.switchState(new MainMenuState());
+					}
+			}
 		}
 
 		super.update(elapsed);
@@ -73,8 +111,8 @@ class OptionsMenu extends MusicBeatState
 		curSelected += change;
 
 		if (curSelected < 0)
-			curSelected = engine.menu.length - 1;
-		if (curSelected >= engine.menu.length)
+			curSelected = menu.length - 1;
+		if (curSelected >= menu.length)
 			curSelected = 0;
 
 		var bullShit:Int = 0;
@@ -92,17 +130,26 @@ class OptionsMenu extends MusicBeatState
 			}
 		}
 	}
-}
+	
+	private function regenMenu():Void
+	{
+		while (grpControls.members.length > 0)
+		{
+			grpControls.remove(grpControls.members[0], true);
+		}
 
-class OptionsEngine {
-	public var instance:Map<String, String> = [
-		// desc and text
-		"Menu Options" => "Select options",
-		"Gameplay Options" => "Select please",
+		for (i in 0...menu.length) {
+			var opti:Alphabet = new Alphabet(0, (70 * i) + 30, menu[i], true, false);
+			opti.isMenuItem = true;
+			opti.targetY = i;
+			grpControls.add(opti);
+		}
+		curSelected = 0;
+		changeSelection();
+	}
 
-		// actual options
-		"ghost tap" => "Play least misses with this"
-	];
-
-	public var menu:Array<String> = ["Gameplay"];
+	function changeMenu(daArray:Array<String>) {
+		menu = daArray;
+		regenMenu();
+	}
 }
