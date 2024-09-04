@@ -1,5 +1,6 @@
 package;
 
+import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
@@ -53,8 +54,11 @@ class Hscript extends FlxBasic
         setVariable('FlxText', FlxText);
         setVariable('FlxTween', FlxTween);
         setVariable('FlxEase', FlxEase);
+		setVariable("FlxTypedGroup", FlxTypedGroup);
 
+		setVariable("Alphabet", Alphabet);
 		setVariable("Paths", Paths);
+		setVariable("SaveData", SaveData);
 
         setVariable("game", PlayState.instance);
         setVariable("add", function (basic:FlxBasic) {

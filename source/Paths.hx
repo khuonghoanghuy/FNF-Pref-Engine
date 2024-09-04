@@ -13,6 +13,7 @@ using StringTools;
 class Paths {
 	inline public static final DEFAULT_FOLDER:String = 'assets';
 	public static var ALL_SCRIPT_EXTENSION:Array<String> = ['.hxs'];
+	public static var GAME_EXTENSION:Array<String> = [".png"];
 	static public var soundExt:String = #if web ".mp3" #else ".ogg" #end;
 
 	static public function getPath(folder:Null<String>, file:String) {
@@ -28,10 +29,10 @@ class Paths {
 	}
 
     inline static public function script(key:String)
-		return file('scripts/$key.hxs');
+		return file('scripts/$key' + ALL_SCRIPT_EXTENSION[0]);
 
 	inline static public function image(key:String)
-		return file('images/$key.png');
+		return file('images/$key' + GAME_EXTENSION[0]);
 
 	inline static public function getCharacter(key:String)
 		return FlxAtlasFrames.fromSparrow(image('characters/$key'), file('images/characters/$key.xml'));
