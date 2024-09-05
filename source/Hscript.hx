@@ -68,13 +68,6 @@ class Hscript extends FlxBasic
             return PlayState.instance.remove(basic);
         });
 
-		setVariable("totalBeats", PlayState.instance.totalBeats);
-		setVariable("totalSteps", PlayState.instance.totalSteps);
-		setVariable("curBeat", PlayState.instance.curBeat);
-		setVariable("curStep", PlayState.instance.curStep);
-		setVariable("lastBeat", PlayState.instance.lastBeat);
-		setVariable("lastStep", PlayState.instance.lastStep);
-
         if (execute)
 			this.execute(file);
     }

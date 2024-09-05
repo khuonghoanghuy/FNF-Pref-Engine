@@ -1,5 +1,5 @@
-function update(elapsed:Float) {
-    switch (totalBeats)
+function onUpdatePost(elapsed:Float) {
+    switch (curBeat)
     {
         case 16:
             game.gfSpeed = 2;

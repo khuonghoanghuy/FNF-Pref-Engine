@@ -30,6 +30,9 @@ class MainMenuState extends MusicBeatState
 
 	override function create()
 	{
+		if (FlxG.save.data.lastSelected == null)
+			FlxG.save.data.lastSelected = 0;
+
 		persistentUpdate = persistentDraw = true;
 
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image("menuBG"));
@@ -76,7 +79,8 @@ class MainMenuState extends MusicBeatState
 			add(versionText);
 		}
 
-		changeItem();
+		// hmm
+		changeItem(FlxG.save.data.lastSelected);
 
 		super.create();
 	}
@@ -162,6 +166,7 @@ class MainMenuState extends MusicBeatState
 		Paths.sound("scrollMenu");
 
 		curSelected += huh;
+		FlxG.save.data.lastSelected = curSelected;
 
 		if (curSelected >= menuItems.length)
 			curSelected = 0;

@@ -1,4 +1,4 @@
-function beatHit(curBeat:Int) {
+function onBeatHit(curBeat:Int) {
     if (curBeat % 16 == 15 && game.curSong.song == 'Tutorial' && game.dad.curCharacter == 'gf' && curBeat > 16 && curBeat < 48)
 	{
 		game.boyfriend.playAnim('hey', true);

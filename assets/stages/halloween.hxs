@@ -2,7 +2,7 @@ var lightningStrikeBeat:Int = 0;
 var lightningOffset:Int = 8;
 var halloweenBG;
 
-function create() {
+function onCreate() {
     var hallowTex = Paths.getSparrowAtlas("stages/halloween/halloween_bg");
     halloweenBG = new FlxSprite(-200, -100);
     halloweenBG.frames = hallowTex;
@@ -12,7 +12,7 @@ function create() {
     add(halloweenBG);
 }
 
-function beatHit(curBeat:Int) {
+function onBeatHit(curBeat:Int) {
     if (FlxG.random.bool(10) && game.curBeat > lightningStrikeBeat + lightningOffset)
 	{
 		lightningStrikeShit();

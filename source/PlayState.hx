@@ -124,7 +124,7 @@ class PlayState extends MusicBeatState
 	{
 		loadScripts();
 		
-		callOnScripts("create", []);
+		callOnScripts("onCreate", []);
 
 		camGame = new FlxCamera();
 		camHUD = new FlxCamera();
@@ -273,7 +273,7 @@ class PlayState extends MusicBeatState
 
 		super.create();
 
-		callOnScripts("createPost", []);
+		callOnScripts("onCreatePost", []);
 	}
 
 	var startTimer:FlxTimer;
@@ -353,6 +353,7 @@ class PlayState extends MusicBeatState
 
 	function startSong():Void
 	{
+		callOnScripts("onStartSong", []);
 		previousFrameTime = FlxG.game.ticks;
 		lastReportedPlayheadPosition = 0;
 
@@ -583,11 +584,11 @@ class PlayState extends MusicBeatState
 
 	override public function update(elapsed:Float)
 	{
-		callOnScripts("update", [elapsed]);
+		callOnScripts("onUpdate", [elapsed]);
 		
 		super.update(elapsed);
 
-		callOnScripts("updatePost", [elapsed]);
+		callOnScripts("onUpdatePost", [elapsed]);
 
 		if (FlxG.keys.justPressed.ENTER && startedCountdown)
 		{
@@ -1120,6 +1121,7 @@ class PlayState extends MusicBeatState
 				case 0:
 					boyfriend.playAnim('singLEFTmiss', true);
 			}
+			callOnScripts("onNoteMiss", [direction]);
 		}
 	}
 
@@ -1160,6 +1162,8 @@ class PlayState extends MusicBeatState
 			note.kill();
 			notes.remove(note, true);
 			note.destroy();
+
+			callOnScripts("onGoodNoteHit", [note]);
 		}
 	}
 
@@ -1177,13 +1181,15 @@ class PlayState extends MusicBeatState
 		}
 
 		super.stepHit();
-		callOnScripts("stepHit", [curStep]);
+		setOnScripts("curStep", curStep);
+		callOnScripts("onStepHit", [curStep]);
 	}
 
 	override function beatHit()
 	{
 		super.beatHit();
-		callOnScripts("beatHit", [curBeat]);
+		setOnScripts("curBeat", curBeat);
+		callOnScripts("onBeatHit", [curBeat]);
 
 		if (generatedMusic)
 		{
@@ -1249,5 +1255,11 @@ class PlayState extends MusicBeatState
 		}
 
 		return value;
+	}
+
+	private function setOnScripts(varName:String, args:Dynamic) {
+		for (script in scriptArray) {
+			script.setVariable(varName, args);
+		}
 	}
 }
