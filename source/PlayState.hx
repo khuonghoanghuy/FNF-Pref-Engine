@@ -203,6 +203,7 @@ class PlayState extends MusicBeatState
 		grpNoteSplashes = new FlxTypedGroup<NoteSplash>();
 
 		var noteSplash:NoteSplash = new NoteSplash(100, 100, 0);
+		noteSplash.visible = false;
 		grpNoteSplashes.add(noteSplash);
 		noteSplash.alpha = 0.1;
 
@@ -270,7 +271,7 @@ class PlayState extends MusicBeatState
 		doof.cameras = [camHUD];
 
 		super.create();
-
+		updateScore();
 		callOnScripts("onCreatePost", []);
 	}
 
@@ -354,7 +355,7 @@ class PlayState extends MusicBeatState
 		callOnScripts("onStartSong", []);
 		previousFrameTime = FlxG.game.ticks;
 		lastReportedPlayheadPosition = 0;
-
+		grpNoteSplashes.members[0].visible = true;
 		startingSong = false;
 		FlxG.sound.playMusic("assets/music/" + SONG.song + "_Inst" + Paths.soundExt, 1, false);
 		FlxG.sound.music.onComplete = endSong;
@@ -576,7 +577,8 @@ class PlayState extends MusicBeatState
 
 	function updateScore() {
 		lerpScore = songScore;
-		lerpScore = Math.floor(FlxMath.lerp(lerpScore, songScore, 0.4));
+		lerpScore = Math.floor(FlxMath.lerp(lerpScore, songScore, 1));
+		if (lerpScore > songScore) lerpScore = songScore;
 		scoreTxt.text = "Score: " + lerpScore;
 	}
 
@@ -601,8 +603,6 @@ class PlayState extends MusicBeatState
 		{
 			FlxG.switchState(new ChartingState());
 		}
-
-		updateScore();
 
 		var mult:Float = FlxMath.lerp(1, iconP1.scale.x, CoolUtil.boundTo(1 - (elapsed * 9), 0, 1));
 		iconP1.scale.set(mult, mult);
@@ -1097,6 +1097,7 @@ class PlayState extends MusicBeatState
 			}
 			combo = 0;
 			songScore -= 10;
+			updateScore();
 
 			FlxG.sound.play('assets/sounds/missnote' + FlxG.random.int(1, 3) + Paths.soundExt, FlxG.random.float(0.1, 0.2));
 
@@ -1119,7 +1120,7 @@ class PlayState extends MusicBeatState
 				case 0:
 					boyfriend.playAnim('singLEFTmiss', true);
 			}
-			callOnScripts("onNoteMiss", [direction]);
+			callOnScripts("noteMiss", [direction]);
 		}
 	}
 
@@ -1133,6 +1134,7 @@ class PlayState extends MusicBeatState
 				combo += 1;
 			}
 			health += 0.023;
+			updateScore();
 
 			switch (note.noteData)
 			{
@@ -1161,7 +1163,7 @@ class PlayState extends MusicBeatState
 			notes.remove(note, true);
 			note.destroy();
 
-			callOnScripts("onGoodNoteHit", [note]);
+			callOnScripts("goodNoteHit", [note]);
 		}
 	}
 

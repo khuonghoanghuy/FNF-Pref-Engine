@@ -16,6 +16,8 @@ class Paths {
 	public static var GAME_EXTENSION:Array<String> = [".png"];
 	static public var soundExt:String = #if web ".mp3" #else ".ogg" #end;
 
+	public static var imagesFile:Array<String> = [];
+
 	static public function getPath(folder:Null<String>, file:String) {
 		if (folder == null)
 			folder = DEFAULT_FOLDER;
@@ -32,7 +34,9 @@ class Paths {
 		return file('scripts/$key' + ALL_SCRIPT_EXTENSION[0]);
 
 	inline static public function image(key:String)
+	{
 		return file('images/$key' + GAME_EXTENSION[0]);
+	}
 
 	inline static public function getCharacter(key:String)
 		return FlxAtlasFrames.fromSparrow(image('characters/$key'), file('images/characters/$key.xml'));

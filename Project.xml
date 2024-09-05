@@ -101,5 +101,5 @@
 	<haxedef name="SKIP_TO_PLAYSTATE" if="debug" />
 	<!-- <haxedef name="NG_LOGIN" /> -->
 
-
+	<haxedef name="hscriptPos"/>
 </project>
