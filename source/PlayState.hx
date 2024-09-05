@@ -123,9 +123,7 @@ class PlayState extends MusicBeatState
 	override public function create()
 	{
 		loadScripts();
-		
 		callOnScripts("onCreate", []);
-
 		camGame = new FlxCamera();
 		camHUD = new FlxCamera();
 		camHUD.bgColor.alpha = 0;
@@ -147,7 +145,7 @@ class PlayState extends MusicBeatState
 		if (SONG.stages != null) {
 			curStage = SONG.stages;
 		} else {
-			switch (curSong.toLowerCase()) {
+			switch (curLevel.toLowerCase()) {
 				case "spookeez" | "south" | "monster": curStage = "halloween";
 				case "bopeebo" | "fresh" | "dadbattle": curStage = "stage";
 				default: curStage = "stage";

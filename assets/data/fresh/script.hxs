@@ -1,4 +1,4 @@
-function onUpdatePost(elapsed:Float) {
+function onBeatHit(elapsed:Float) {
     switch (curBeat)
     {
         case 16:

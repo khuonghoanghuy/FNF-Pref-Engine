@@ -86,7 +86,7 @@ class Hscript extends FlxBasic
 		trace('Script Loaded Succesfully: $file');
 
 		if (executeCreate)
-			executeFunc('create', []);
+			executeFunc('onCreate', []);
 	}
 
 	public function setVariable(name:String, val:Dynamic):Void {
