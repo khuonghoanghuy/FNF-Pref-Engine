@@ -68,7 +68,7 @@ class TitleState extends MusicBeatState
 		}
 
 		#if SKIP_TO_PLAYSTATE
-		FlxG.switchState(new CacheState());
+		FlxG.switchState(new MainMenuState());
 		#else
 		startIntro();
 		#end

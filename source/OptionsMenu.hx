@@ -19,9 +19,6 @@ class OptionsMenu extends MusicBeatState
 
 	var grpControls:FlxTypedGroup<Alphabet>;
 
-	public var optionsList:Map<String, String> = [
-		"ghost tap" => "Play least misses with this"
-	];
 	public var menu:Array<String> = [];
 	var og:Array<String> = ["Gameplay"];
 	var gameplay:Array<String> = ["Ghost tap", "Downscroll"];
@@ -34,10 +31,10 @@ class OptionsMenu extends MusicBeatState
 		menuBG.antialiasing = true;
 		add(menuBG);
 
-		titleTxt = new FlxText(10, 5, 0, "", 32);
+		titleTxt = new FlxText(10, 5, 0, "Options Menu", 32);
 		titleTxt.setFormat("assets/fonts/vcr.ttf", 32, FlxColor.WHITE, RIGHT, OUTLINE, FlxColor.BLACK);
 
-		descTxt = new FlxText(titleTxt.x + 10, titleTxt.y + 30, 0, "", 24);
+		descTxt = new FlxText(titleTxt.x + 10, titleTxt.y + 30, 0, "Please selected the options", 24);
 		descTxt.setFormat("assets/fonts/vcr.ttf", 24, FlxColor.WHITE, RIGHT, OUTLINE, FlxColor.BLACK);
 
 		var scoreBG:FlxSprite = new FlxSprite(0, 0).makeGraphic(Std.int(FlxG.width), Std.int(descTxt.y + 30), FlxColor.BLACK);
@@ -58,6 +55,7 @@ class OptionsMenu extends MusicBeatState
 		}
 
 		changeMenu(og);
+		changeOptions();
 
 		super.create();
 	}
@@ -67,8 +65,9 @@ class OptionsMenu extends MusicBeatState
 		if (controls.BACK)
 		{
 			if (stillInOpt) {
+				stillInOpt = false;
 				changeMenu(og);
-			} else {
+			} else if (!stillInOpt) {
 				FlxG.switchState(new MainMenuState());
 			}
 		}
@@ -90,19 +89,38 @@ class OptionsMenu extends MusicBeatState
 
 				case "ghost tap":
 					SaveData.set("ghost tap", !SaveData.get("ghost tap"));
-					trace(SaveData.get("ghost tap"));
-
-				// cool opt
-				case "back":
-					if (stillInOpt) {
-						changeMenu(og);
-					} else {
-						FlxG.switchState(new MainMenuState());
-					}
 			}
+			changeOptions();
 		}
 
 		super.update(elapsed);
+	}
+
+	function changeOptions() {
+		switch (menu[curSelected].toLowerCase()) {
+			case "ghost tap":
+				changeTextWithBool("Play with least miss", SaveData.get("ghost tap"));
+			default: if (!stillInOpt) {
+				reChangeText("Options Menu", "Please select the options");
+			}
+		}
+	}
+
+	function reChangeText(title:String, desc:String) {
+		titleTxt.text = title;
+		descTxt.text = desc;
+	}
+
+	function changeTextWithBool(desc:String, boolvar:Bool):String {
+		descTxt.text = desc;
+		var strBool = (boolvar ? "ENABLE" : "DISABLE");
+		var result:String = "";
+		if (descTxt.text.contains(strBool)) {
+			result = descTxt.text.replace(strBool, "");
+		} else {
+			result = descTxt.text + ": " + strBool;
+		}
+		return result;
 	}
 
 	function changeSelection(change:Int = 0)
