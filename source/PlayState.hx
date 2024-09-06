@@ -195,6 +195,8 @@ class PlayState extends MusicBeatState
 		Conductor.songPosition = -5000;
 
 		strumLine = new FlxSprite(0, 50).makeGraphic(FlxG.width, 10);
+		if (SaveData.get("downscroll"))
+			strumLine.y = 150;
 		strumLine.scrollFactor.set();
 
 		strumLineNotes = new FlxTypedGroup<FlxSprite>();
@@ -393,8 +395,6 @@ class PlayState extends MusicBeatState
 		var daBeats:Int = 0; // Not exactly representative of 'daBeats' lol, just how much it has looped
 		for (section in noteData)
 		{
-			var coolSection:Int = Std.int(section.lengthInSteps / 4);
-
 			for (songNotes in section.sectionNotes)
 			{
 				var daStrumTime:Float = songNotes[0];
@@ -759,7 +759,10 @@ class PlayState extends MusicBeatState
 					daNote.destroy();
 				}
 
-				daNote.y = (strumLine.y - (Conductor.songPosition - daNote.strumTime) * (0.45 * PlayState.SONG.speed));
+				if (SaveData.get("downscroll"))
+					daNote.y = (strumLine.y + (Conductor.songPosition - daNote.strumTime) * (0.45 * PlayState.SONG.speed));
+				else
+					daNote.y = (strumLine.y - (Conductor.songPosition - daNote.strumTime) * (0.45 * PlayState.SONG.speed));
 
 				// WIP interpolation shit? Need to fix the pause issue
 				// daNote.y = (strumLine.y - (songTime - daNote.strumTime) * (0.45 * PlayState.SONG.speed));
@@ -770,6 +773,8 @@ class PlayState extends MusicBeatState
 					{
 						health -= 0.04;
 						vocals.volume = 0;
+						if (SaveData.get("count miss note as misses"))
+							noteMiss(daNote.noteData);
 					}
 
 					daNote.active = false;

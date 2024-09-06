@@ -5,7 +5,8 @@ import flixel.util.FlxSave;
 class SaveData {
     public static var settings:Map<String, Dynamic> = [
         "ghost tap" => true,
-        "downscroll" => false
+        "downscroll" => false,
+		"count miss note as misses" => false
     ];
 
     public static function saveSettings() {
@@ -33,11 +34,14 @@ class SaveData {
 	}
 
 	public static function get(string:String)
+	{
+		trace("Save Data get: " + string);
 		return SaveData.settings.get(string);
+	}
 	
 	public static function set(string:String, newValue:Dynamic)
+	{
+		trace("Save Data set with " + string + " as new value is: " + newValue);
 		return SaveData.settings.set(string, newValue);
-
-    public static function remove(string:String)
-        return SaveData.settings.remove(string);
+	}
 }

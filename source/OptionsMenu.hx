@@ -21,7 +21,7 @@ class OptionsMenu extends MusicBeatState
 
 	public var menu:Array<String> = [];
 	var og:Array<String> = ["Gameplay"];
-	var gameplay:Array<String> = ["Ghost tap", "Downscroll"];
+	var gameplay:Array<String> = ["Ghost tap", "Downscroll", "Count miss note as misses"];
 
 	override function create()
 	{
@@ -64,6 +64,7 @@ class OptionsMenu extends MusicBeatState
 	{
 		if (controls.BACK)
 		{
+			changeOptions();
 			if (stillInOpt) {
 				stillInOpt = false;
 				changeMenu(og);
@@ -87,10 +88,9 @@ class OptionsMenu extends MusicBeatState
 					stillInOpt = true;
 					changeMenu(gameplay);
 
-				case "ghost tap":
-					SaveData.set("ghost tap", !SaveData.get("ghost tap"));
+				case "ghost tap", "downscroll", "count miss note as misses":
+					quickChangeAsBool();
 			}
-			changeOptions();
 		}
 
 		super.update(elapsed);
@@ -99,9 +99,13 @@ class OptionsMenu extends MusicBeatState
 	function changeOptions() {
 		switch (menu[curSelected].toLowerCase()) {
 			case "ghost tap":
-				changeTextWithBool("Play with least miss", SaveData.get("ghost tap"));
-			default: if (!stillInOpt) {
-				reChangeText("Options Menu", "Please select the options");
+				changeTextWithBool("Play with least miss");
+			case "downscroll":
+				changeTextWithBool("Play as downscroll");
+			case "count miss note as misses":
+				changeTextWithBool("When you actual misses a note, is count as a misses");
+			case "gameplay": if (!stillInOpt) {
+				reChangeText("Gameplay Menu", "Setting and adjust for gameplay");
 			}
 		}
 	}
@@ -111,22 +115,27 @@ class OptionsMenu extends MusicBeatState
 		descTxt.text = desc;
 	}
 
-	function changeTextWithBool(desc:String, boolvar:Bool):String {
-		descTxt.text = desc;
+	function changeTextWithBool(desc:String, ?boolvar:Bool):String {
+		if (boolvar == null)
+			boolvar = SaveData.get(menu[curSelected].toLowerCase());
 		var strBool = (boolvar ? "ENABLE" : "DISABLE");
 		var result:String = "";
-		if (descTxt.text.contains(strBool)) {
-			result = descTxt.text.replace(strBool, "");
-		} else {
-			result = descTxt.text + ": " + strBool;
-		}
-		return result;
+		result = desc + ": " + strBool;
+		descTxt.text = result; // Update the text field with the result
+		return result; // Return the updated string
+	}
+
+	function quickChangeAsBool(boolvar:Bool = null) {
+		if (boolvar == null)
+			boolvar = SaveData.get(menu[curSelected].toLowerCase());
+		return SaveData.set(menu[curSelected].toLowerCase(), !boolvar);
 	}
 
 	function changeSelection(change:Int = 0)
 	{
 		Paths.sound("scrollMenu");
 		curSelected += change;
+		changeOptions();
 
 		if (curSelected < 0)
 			curSelected = menu.length - 1;
@@ -151,6 +160,7 @@ class OptionsMenu extends MusicBeatState
 	
 	private function regenMenu():Void
 	{
+		changeOptions();
 		while (grpControls.members.length > 0)
 		{
 			grpControls.remove(grpControls.members[0], true);
