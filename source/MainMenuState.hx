@@ -38,20 +38,13 @@ class MainMenuState extends MusicBeatState
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image("menuBG"));
 		bg.scrollFactor.set(0, 0);
 		bg.antialiasing = true;
-		add(bg);
-
 		camFollow = new FlxObject(0, 0, 1, 1);
-		add(camFollow);
-
 		magenta = new FlxSprite(0).loadGraphic(Paths.image("menuBGMagenta"));
 		magenta.scrollFactor.set(0, 0);
 		magenta.color = 0xFFfd719b;
 		magenta.visible = false;
-		add(magenta);
-		// magenta.scrollFactor.set();
-
 		menuItems = new FlxTypedGroup<FlxSprite>();
-		add(menuItems);
+		multi_added([bg, camFollow, magenta, menuItems]);
 
 		var tex = Paths.getSparrowAtlas("FNF_main_menu_assets");
 

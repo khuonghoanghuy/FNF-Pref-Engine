@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxBasic;
 import Conductor.BPMChangeEvent;
 import flixel.addons.ui.FlxUIState;
 
@@ -67,5 +68,11 @@ class MusicBeatState extends FlxUIState
 	public function beatHit():Void
 	{
 		//do literally nothing dumbass
+	}
+
+	public function multi_added(basic:Array<FlxBasic>) {
+		for (b1 in basic) {
+			add(b1);
+		}
 	}
 }

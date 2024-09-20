@@ -46,7 +46,6 @@
 
 	<assets path="assets/fonts/vcr.ttf" embed="true" />
 
-
 	<!-- _______________________________ Libraries ______________________________ -->
 
 	<haxelib name="flixel" />
