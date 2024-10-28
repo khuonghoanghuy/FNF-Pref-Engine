@@ -35,13 +35,11 @@ class SaveData {
 
 	public static function get(string:String)
 	{
-		trace("Save Data get: " + string);
 		return SaveData.settings.get(string);
 	}
 	
 	public static function set(string:String, newValue:Dynamic)
 	{
-		trace("Save Data set with " + string + " as new value is: " + newValue);
 		return SaveData.settings.set(string, newValue);
 	}
 }

@@ -12,7 +12,7 @@ class Main extends Sprite
 		super();
 		addChild(new FlxGame(0, 0, TitleState));
 		addChild(new FPS(10, 3, 0xFFFFFF));
-		FlxG.save.data.lastSelected = null;
+		FlxG.save.data.lastSelected = 0;
 		FlxG.mouse.useSystemCursor = true;
 	}
 }
