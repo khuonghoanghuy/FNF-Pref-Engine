@@ -1,5 +1,6 @@
 package;
 
+import debug.FlxStudio;
 import flixel.FlxBasic;
 import Conductor.BPMChangeEvent;
 import flixel.addons.ui.FlxUIState;
@@ -18,6 +19,10 @@ class MusicBeatState extends FlxUIState
 
 	override function create()
 	{
+		#if debug
+		FlxStudio.create();
+		#end
+
 		#if (!web)
 		Paths.soundExt = '.ogg';
 		#end

@@ -9,6 +9,10 @@ class MusicBeatSubstate extends FlxSubState
 	public function new()
 	{
 		super();
+
+		#if debug
+		debug.FlxStudio.create();
+		#end
 	}
 
 	private var lastBeat:Float = 0;
