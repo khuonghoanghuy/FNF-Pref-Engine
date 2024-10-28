@@ -83,7 +83,7 @@ class PlayState extends MusicBeatState
 	public static var campaignScore:Int = 0;
 
 	public static var instance:PlayState = null;
-	var scriptArray:Array<Hscript> = [];
+	var scriptArray:Array<HscriptIris> = [];
 
 	public function new() {
 		super();
@@ -98,7 +98,7 @@ class PlayState extends MusicBeatState
 			for (ext in Paths.ALL_SCRIPT_EXTENSION) {
 				if (file.endsWith(ext)) {
 					var scriptPath = Path.join(["assets/scripts", file]);
-					scriptArray.push(new Hscript(scriptPath));
+					scriptArray.push(new HscriptIris(scriptPath, scriptPath));
 				}
 			}
 		}
@@ -109,7 +109,7 @@ class PlayState extends MusicBeatState
 			for (ext in Paths.ALL_SCRIPT_EXTENSION) {
 				if (file.endsWith(ext)) {
 					var scriptPath = Path.join(["assets/data/" + Paths.formatToSongPath(SONG.song), file]);
-					scriptArray.push(new Hscript(scriptPath));
+					scriptArray.push(new HscriptIris(scriptPath, scriptPath));
 				}
 			}
 		}
@@ -117,7 +117,7 @@ class PlayState extends MusicBeatState
 
 	function loadStage() {
 		for (extension in Paths.ALL_SCRIPT_EXTENSION) {
-			scriptArray.push(new Hscript("assets/stages/" + curStage + extension));
+			scriptArray.push(new HscriptIris("assets/stages/" + curStage + extension, curStage));
 		}
 	}
 
@@ -1209,8 +1209,6 @@ class PlayState extends MusicBeatState
 				Conductor.changeBPM(SONG.notes[Math.floor(curStep / 16)].bpm);
 				FlxG.log.add('CHANGED BPM!');
 			}
-			// else
-			// Conductor.changeBPM(SONG.bpm);
 		}
 
 		if (camZooming && FlxG.camera.zoom < 1.35 && curBeat % 4 == 0)
@@ -1251,21 +1249,19 @@ class PlayState extends MusicBeatState
 	}
 
 	private function callOnScripts(funcName:String, args:Array<Dynamic>):Dynamic {
-		var value:Dynamic = Hscript.Function_Continue;
-
 		for (i in 0...scriptArray.length) {
-			final call:Dynamic = scriptArray[i].executeFunc(funcName, args);
-			final bool:Bool = call == Hscript.Function_Continue;
-			if (!bool && call != null)
-				value = call;
+			@:privateAccess
+			if (scriptArray == null || !scriptArray[i].script.exists(funcName))
+				continue; // for not always call as error
+			scriptArray[i].script.call(funcName, args);
 		}
-
-		return value;
+		return null;
 	}
 
 	private function setOnScripts(varName:String, args:Dynamic) {
-		for (script in scriptArray) {
-			script.setVariable(varName, args);
+		for (i in 0...scriptArray.length) {
+			scriptArray[i].script.set(varName, args);
 		}
+		return null;
 	}
 }
