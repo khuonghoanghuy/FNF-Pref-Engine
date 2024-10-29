@@ -29,6 +29,8 @@ class HscriptIris extends FlxBasic
         script.config.autoRun = false;
 
         // Present
+		script.set("game", PlayState.instance);
+		script.set("Paths", Paths);
         script.set("FlxG", FlxG);
         script.set("FlxSprite", FlxSprite);
         script.set("FlxCamera", FlxCamera);
@@ -62,6 +64,8 @@ class HscriptIris extends FlxBasic
 				}
 			}
 		});
+		script.set("add", PlayState.instance.add);
+		script.set("remove", PlayState.instance.remove);
         script.execute();
     }    
 }

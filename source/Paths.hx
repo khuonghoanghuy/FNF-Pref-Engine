@@ -51,6 +51,14 @@ class Paths {
 			file("sounds/" + key + soundExt);
 	}
 
+	inline static public function getStageImage(path:String) {
+		return file("stages/" + PlayState.curStage + "/images/" + path + ".png");
+	}
+
+	inline static public function getStageSparrow(path:String) {
+		return FlxAtlasFrames.fromSparrow(getStageImage(path), file("stages/" + PlayState.curStage + "/images/" + path + ".xml"));
+	}
+
     inline static public function formatToSongPath(path:String) {
 		var invalidChars = ~/[~&\\;:<>#]/;
 		var hideChars = ~/[.,'"%?!]/;

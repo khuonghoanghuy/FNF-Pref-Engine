@@ -117,7 +117,7 @@ class PlayState extends MusicBeatState
 
 	function loadStage() {
 		for (extension in Paths.ALL_SCRIPT_EXTENSION) {
-			scriptArray.push(new HscriptIris("assets/stages/" + curStage + extension, curStage));
+			scriptArray.push(new HscriptIris(Paths.file("stages/" + curStage + "/" + curStage + extension), curStage));
 		}
 	}
 
@@ -275,6 +275,7 @@ class PlayState extends MusicBeatState
 
 		super.create();
 		updateScore();
+
 		callOnScripts("onCreatePost", []);
 	}
 

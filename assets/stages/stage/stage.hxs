@@ -1,0 +1,7 @@
+function onCreate()
+{
+    var bg = new FlxSprite(-600, -200).loadGraphic(Paths.getStageImage("ful_bg"));
+    bg.scrollFactor.set(0.9, 0.9);
+    bg.active = false;
+    game.add(bg);
+}
