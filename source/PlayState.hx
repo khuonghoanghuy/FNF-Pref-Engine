@@ -83,7 +83,7 @@ class PlayState extends MusicBeatState
 	public static var campaignScore:Int = 0;
 
 	public static var instance:PlayState = null;
-	var scriptArray:Array<HscriptIris> = [];
+	var scriptArray:Array<Hscript> = [];
 
 	public function new() {
 		super();
@@ -98,7 +98,7 @@ class PlayState extends MusicBeatState
 			for (ext in Paths.ALL_SCRIPT_EXTENSION) {
 				if (file.endsWith(ext)) {
 					var scriptPath = Path.join(["assets/scripts", file]);
-					scriptArray.push(new HscriptIris(scriptPath, scriptPath));
+					scriptArray.push(new Hscript(scriptPath, scriptPath));
 				}
 			}
 		}
@@ -109,7 +109,7 @@ class PlayState extends MusicBeatState
 			for (ext in Paths.ALL_SCRIPT_EXTENSION) {
 				if (file.endsWith(ext)) {
 					var scriptPath = Path.join(["assets/data/" + Paths.formatToSongPath(SONG.song), file]);
-					scriptArray.push(new HscriptIris(scriptPath, scriptPath));
+					scriptArray.push(new Hscript(scriptPath, scriptPath));
 				}
 			}
 		}
@@ -117,7 +117,7 @@ class PlayState extends MusicBeatState
 
 	function loadStage() {
 		for (extension in Paths.ALL_SCRIPT_EXTENSION) {
-			scriptArray.push(new HscriptIris(Paths.file("stages/" + curStage + "/" + curStage + extension), curStage));
+			scriptArray.push(new Hscript(Paths.file("stages/" + curStage + "/" + curStage + extension), curStage));
 		}
 	}
 
@@ -1250,19 +1250,19 @@ class PlayState extends MusicBeatState
 	}
 
 	private function callOnScripts(funcName:String, args:Array<Dynamic>):Dynamic {
+		var returnVal:Dynamic = 0;
 		for (i in 0...scriptArray.length) {
-			@:privateAccess
-			if (scriptArray == null || !scriptArray[i].script.exists(funcName))
-				continue; // for not always call as error
-			scriptArray[i].script.call(funcName, args);
+			final call:Dynamic = scriptArray[i].executeFunc(funcName, args);
+			final bool:Bool = call == 0;
+			if (!bool && call != null)
+				returnVal = call;
 		}
-		return null;
+		return returnVal;
 	}
 
 	private function setOnScripts(varName:String, args:Dynamic) {
 		for (i in 0...scriptArray.length) {
-			scriptArray[i].script.set(varName, args);
+			scriptArray[i].setVariable(varName, args);
 		}
-		return null;
 	}
 }
