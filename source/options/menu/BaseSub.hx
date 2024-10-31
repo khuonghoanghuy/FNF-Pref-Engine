@@ -1,5 +1,7 @@
 package options.menu;
 
+import flixel.text.FlxText;
+import options.box.CheckboxThingie;
 import flixel.util.FlxColor;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -10,6 +12,7 @@ class BaseSub extends MusicBeatSubstate
 	var curSelected:Int = 0;
 	var grpControls:FlxTypedGroup<Alphabet>;
 	public var menu:Array<String> = [];
+    var menuText:FlxText;
 
     override function create() {
         super.create();
@@ -22,6 +25,15 @@ class BaseSub extends MusicBeatSubstate
         grpControls = new FlxTypedGroup<Alphabet>();
 		add(grpControls);
 
+        var subBg:FlxSprite = new FlxSprite(0, 580).makeGraphic(FlxG.width, 300, FlxColor.BLACK);
+        subBg.alpha = 0.6;
+        add(subBg);
+
+        menuText = new FlxText(subBg.x + 40, subBg.y + 35, 0, "", 32);
+        menuText.scrollFactor.set();
+        menuText.setFormat(Paths.file("fonts/vcr.ttf"), 32, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK);
+        add(menuText);
+
         changeSelection();
     }    
 
@@ -29,7 +41,7 @@ class BaseSub extends MusicBeatSubstate
         super.update(elapsed);
 
         if (controls.BACK)
-            close(); // fix pls
+            close();
 
         if (controls.UI_UP_P) {
             changeSelection(-1);
@@ -73,5 +85,14 @@ class BaseSub extends MusicBeatSubstate
 			opti.targetY = i;
 			grpControls.add(opti);
 		}
+    }
+
+    function changeMenuText(text:String, ?type:String = "bool") {
+        menuText.text = text;
+        switch (type) {
+            case "bool":
+            case "int" | "float" | "numbers":
+            case "string":
+        }
     }
 }
